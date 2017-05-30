@@ -76,48 +76,19 @@ public class Topology {
         logger.debug("Spout is set for the topology.SPOUT="+SPOUT_NAME+",TOPOLOGY="+TOPOLOGY_NAME);
         builder.setBolt(BOLT_NAME,new CassandraBolt(CASSANDRA_NODE_IP,CASSANDRA_PORT),2).globalGrouping("KafkaSpout");
         logger.debug("Bolt is set for Topology.BOLT="+BOLT_NAME+",TOPOLOGY="+TOPOLOGY_NAME);
-        //LocalCluster cluster= new LocalCluster();
         Config config=new Config();
         config.setNumWorkers(4);
         config.setMaxSpoutPending(1000);
         config.setMessageTimeoutSecs(60);
         config.setNumAckers(0);
         config.setMaxTaskParallelism(50);
-        /*config.put(Config.NIMBUS_HOST,"172.26.41.56");
-        config.put(Config.NIMBUS_THRIFT_PORT,6627);
-        config.put(Config.STORM_ZOOKEEPER_PORT, 2181);
-        config.put(Config.STORM_ZOOKEEPER_SESSION_TIMEOUT,1000000000);
-        config.setDebug(true);*/
-        
-        //Map storm_conf=Utils.readStormConfig();
-        //storm_conf.put("nimbus.host","172.26.41.56");
-        //Client client=NimbusClient.getConfiguredClient(storm_conf).getClient();
-        //NimbusClient nimbus=new NimbusClient(storm_conf, "172.26.41.56",6627);
-        
         try{
-            //String uploadJarLocation=StormSubmitter.submitJar(config, "C:\\Users\\akash.sethiya\\Desktop\\sethiyaji.akash\\skcUtility\\target\\skcUtility-1.0-SNAPSHOT-jar-with-dependencies.jar");
-            //String jsonConf=JSONValue.toJSONString(storm_conf);
-            //nimbus.getClient().submitTopology(TOPOLOGY_NAME, uploadJarLocation, jsonConf, builder.createTopology());
-            //StormSubmitter.submitJar(config, "C:\\Users\\akash.sethiya\\Desktop\\sethiyaji.akash\\skcUtility\\target\\skcUtility-1.0-SNAPSHOT-jar-with-dependencies.jar");
             StormSubmitter.submitTopology(TOPOLOGY_NAME, config, builder.createTopology());
-            //Thread.sleep(1000);
         }
         catch(InvalidTopologyException e){
             logger.error("Invalid Topology : "+TOPOLOGY_NAME);
             e.printStackTrace();
         }
-        /*cluster.submitTopology(TOPOLOGY_NAME, config, builder.createTopology());
-        try {
-            Thread.sleep(3600000);
-        } catch (InterruptedException e) {
-            logger.error("Error Occured due to threading.ERROR:"+e);
-            e.printStackTrace();
-        }
-        KillOptions killOpts=new KillOptions();
-        killOpts.set_wait_secs(1);
-        cluster.killTopologyWithOpts(TOPOLOGY_NAME,killOpts);
-        cluster.shutdown();
-        logger.info("TOPOLOGY="+TOPOLOGY_NAME+" has been shutdown.");*/
     }
     
     private static void setProperties(String propertyFileName) throws IOException{
